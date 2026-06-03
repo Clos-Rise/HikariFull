@@ -528,12 +528,14 @@ public final class NewChunkHolder {
     private Priority priority = null;
     private boolean priorityLocked;
 
-    // ===== SUNSHINE:
+    // ===== SUNSHINE: distance-based priority =====
     private volatile int sunshineDistance = Integer.MAX_VALUE;
 
     public void updateSunshineDistance(final int distance) {
         this.sunshineDistance = distance;
     }
+
+
 
     public int getSunshineDistance() {
         return this.sunshineDistance;
@@ -541,6 +543,8 @@ public final class NewChunkHolder {
 
     /**
      * Sunshine: финальный приоритет с учётом расстояния до ближайшего игрока.
+     * НЕ трогает внутренний каскадный пересчёт Moonrise — используется только
+     * при создании задач для пула (generation, load, io).
      */
     public Priority getSunshineEffectivePriority(final Priority dfl) {
         final Priority base = this.getEffectivePriority(dfl);
@@ -1775,7 +1779,8 @@ public final class NewChunkHolder {
             task.queue();
 
             MoonriseRegionFileIO.scheduleSave(
-                this.world, this.chunkX, this.chunkZ, completable, task, MoonriseRegionFileIO.RegionFileType.CHUNK_DATA, Priority.NORMAL
+                this.world, this.chunkX, this.chunkZ, completable, task, MoonriseRegionFileIO.RegionFileType.CHUNK_DATA,
+                this.getSunshineEffectivePriority(Priority.NORMAL)
             );
             if (chunkSave != null) {
                 chunkSave[0] = completable;
@@ -1816,7 +1821,8 @@ public final class NewChunkHolder {
                 });
 
                 MoonriseRegionFileIO.scheduleSave(
-                    this.world, this.chunkX, this.chunkZ, toWrite, null, MoonriseRegionFileIO.RegionFileType.ENTITY_DATA, Priority.NORMAL
+                    this.world, this.chunkX, this.chunkZ, toWrite, null, MoonriseRegionFileIO.RegionFileType.ENTITY_DATA,
+                    this.getSunshineEffectivePriority(Priority.NORMAL)
                 );
                 this.lastEntitySaveNull = false;
                 if (entitySave != null) {
@@ -1831,7 +1837,10 @@ public final class NewChunkHolder {
                 return false;
             }
 
-            MoonriseRegionFileIO.scheduleSave(this.world, this.chunkX, this.chunkZ, save, MoonriseRegionFileIO.RegionFileType.ENTITY_DATA);
+            MoonriseRegionFileIO.scheduleSave(
+                this.world, this.chunkX, this.chunkZ, save, MoonriseRegionFileIO.RegionFileType.ENTITY_DATA,
+                this.getSunshineEffectivePriority(Priority.NORMAL)
+            );
             this.lastEntitySaveNull = save == null;
             if (entitySave != null) {
                 entitySave[0] = Completable.completed(save);
@@ -1852,7 +1861,10 @@ public final class NewChunkHolder {
                 return false;
             }
 
-            MoonriseRegionFileIO.scheduleSave(this.world, this.chunkX, this.chunkZ, save, MoonriseRegionFileIO.RegionFileType.POI_DATA);
+            MoonriseRegionFileIO.scheduleSave(
+                this.world, this.chunkX, this.chunkZ, save, MoonriseRegionFileIO.RegionFileType.POI_DATA,
+                this.getSunshineEffectivePriority(Priority.NORMAL)
+            );
             this.lastPoiSaveNull = save == null;
             if (poiSave != null) {
                 poiSave[0] = Completable.completed(save);
