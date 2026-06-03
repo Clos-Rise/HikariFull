@@ -119,10 +119,6 @@ public final class ChunkTaskScheduler {
     public final ChunkHolderManager chunkHolderManager;
 
     // ===== SUNSHINE: расчёт расстояния до ближайшего игрока =====
-    /**
-     * Обновляет sunshineDistance для chunkHolder на основе расстояния до ближайшего игрока.
-     * Chebyshev distance в чанках (max(|dx|, |dz|)).
-     */
     private void updateSunshineDistance(final int chunkX, final int chunkZ, final NewChunkHolder chunkHolder) {
         if (chunkHolder == null) {
             return;
