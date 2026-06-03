@@ -151,6 +151,24 @@ public abstract class Mob extends LivingEntity implements Targeting, EquipmentUs
     public boolean aware = true; // CraftBukkit
     public net.kyori.adventure.util.TriState despawnInPeacefulOverride = net.kyori.adventure.util.TriState.NOT_SET; // Paper - allow changing despawnInPeaceful
     public int ticksSinceLastInteraction; // Purpur - Entity lifespan
+    private volatile Path pendingAsyncPath;
+    private volatile boolean asyncPathReady = false;
+
+    public void setPendingAsyncPath(final Path path) {
+        this.pendingAsyncPath = path;
+        this.asyncPathReady = true;
+    }
+
+    public boolean hasAsyncPathReady() {
+        return this.asyncPathReady;
+    }
+
+    public Path takeAsyncPath() {
+        this.asyncPathReady = false;
+        final Path ret = this.pendingAsyncPath;
+        this.pendingAsyncPath = null;
+        return ret;
+    }
 
     protected Mob(final EntityType<? extends Mob> type, final Level level) {
         super(type, level);
@@ -855,6 +873,13 @@ public abstract class Mob extends LivingEntity implements Targeting, EquipmentUs
         }
 
         profiler.push("navigation");
+        // ===== SUNSHINE: применяем async path если готов =====
+        if (this.hasAsyncPathReady()) {
+            final Path asyncPath = this.takeAsyncPath();
+            if (asyncPath != null) {
+                this.navigation.moveTo(asyncPath, this.getSpeed());
+            }
+        }
         this.navigation.tick();
         profiler.pop();
         profiler.push("mob tick");
