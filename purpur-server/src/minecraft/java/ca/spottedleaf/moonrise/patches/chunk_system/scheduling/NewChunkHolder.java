@@ -528,7 +528,7 @@ public final class NewChunkHolder {
     private Priority priority = null;
     private boolean priorityLocked;
 
-    // ===== SUNSHINE: distance-based priority =====
+    // ===== SUNSHINE:
     private volatile int sunshineDistance = Integer.MAX_VALUE;
 
     public void updateSunshineDistance(final int distance) {
@@ -541,8 +541,6 @@ public final class NewChunkHolder {
 
     /**
      * Sunshine: финальный приоритет с учётом расстояния до ближайшего игрока.
-     * НЕ трогает внутренний каскадный пересчёт Moonrise — используется только
-     * при создании задач для пула (generation, load, io).
      */
     public Priority getSunshineEffectivePriority(final Priority dfl) {
         final Priority base = this.getEffectivePriority(dfl);
