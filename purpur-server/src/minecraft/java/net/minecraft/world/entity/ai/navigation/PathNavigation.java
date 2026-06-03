@@ -5,6 +5,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import net.minecraft.core.BlockPos;
+import ca.spottedleaf.moonrise.common.util.CoordinateUtils;
 import net.minecraft.core.Vec3i;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.BlockTags;
@@ -77,7 +78,7 @@ public abstract class PathNavigation {
     }
 
     private float getMaxPathLength() {
-        return Math.max((float)this.mob.getAttributeValue(Attributes.FOLLOW_RANGE), this.requiredPathLength);
+        return Math.max((float) this.mob.getAttributeValue(Attributes.FOLLOW_RANGE), this.requiredPathLength);
     }
 
     public void resetMaxVisitedNodesMultiplier() {
@@ -125,6 +126,7 @@ public abstract class PathNavigation {
         // Paper start - EntityPathfindEvent
         return this.createPath(pos, null, reachRange);
     }
+
     public @Nullable Path createPath(BlockPos pos, @Nullable Entity entity, int reachRange) {
         return this.createPath(ImmutableSet.of(pos), entity, 8, false, reachRange);
         // Paper end - EntityPathfindEvent
@@ -191,7 +193,7 @@ public abstract class PathNavigation {
         ProfilerFiller profiler = Profiler.get();
         profiler.push("pathfind");
         BlockPos fromPos = above ? this.mob.blockPosition().above() : this.mob.blockPosition();
-        int radius = (int)(maxPathLength + radiusOffset);
+        int radius = (int) (maxPathLength + radiusOffset);
         PathNavigationRegion region = new PathNavigationRegion(this.level, fromPos.offset(-radius, -radius, -radius), fromPos.offset(radius, radius, radius));
         Path path = this.pathFinder.findPath(region, this.mob, targets, maxPathLength, reachRange, this.maxVisitedNodesMultiplier);
         profiler.pop();
@@ -430,8 +432,8 @@ public abstract class PathNavigation {
     protected static boolean isClearForMovementBetween(final Mob mob, final Vec3 startPos, final Vec3 stopPos, final boolean blockedByFluids) {
         Vec3 to = new Vec3(stopPos.x, stopPos.y + mob.getBbHeight() * 0.5, stopPos.z);
         return mob.level()
-                .clip(new ClipContext(startPos, to, ClipContext.Block.COLLIDER, blockedByFluids ? ClipContext.Fluid.ANY : ClipContext.Fluid.NONE, mob))
-                .getType()
+            .clip(new ClipContext(startPos, to, ClipContext.Block.COLLIDER, blockedByFluids ? ClipContext.Fluid.ANY : ClipContext.Fluid.NONE, mob))
+            .getType()
             == HitResult.Type.MISS;
     }
 
@@ -476,5 +478,33 @@ public abstract class PathNavigation {
 
     public void setCanOpenDoors(final boolean canOpenDoors) {
         this.nodeEvaluator.setCanOpenDoors(canOpenDoors);
+    }
+
+    public void createPathAsync(final double x, final double y, final double z, final int reachRange) {
+        if (!(this.level instanceof ServerLevel serverLevel)) {
+            return;
+        }
+
+        final Mob mob = this.mob;
+        final PathNavigation nav = this;
+
+        ((ca.spottedleaf.moonrise.patches.chunk_system.level.ChunkSystemServerLevel) serverLevel)
+            .moonrise$getChunkTaskScheduler()
+            .parallelGenExecutor
+            .createTask(() -> {
+                final Path path = nav.createPath(x, y, z, reachRange);
+
+                final int chunkX = net.minecraft.util.Mth.floor(mob.getX()) >> 4;
+                final int chunkZ = net.minecraft.util.Mth.floor(mob.getZ()) >> 4;
+
+                ((ca.spottedleaf.moonrise.patches.chunk_system.level.ChunkSystemServerLevel) serverLevel)
+                    .moonrise$getChunkTaskScheduler()
+                    .scheduleChunkTask(
+                        chunkX,
+                        chunkZ,
+                        () -> mob.setPendingAsyncPath(path),
+                        ca.spottedleaf.concurrentutil.util.Priority.NORMAL
+                    );
+            }).queue();
     }
 }
