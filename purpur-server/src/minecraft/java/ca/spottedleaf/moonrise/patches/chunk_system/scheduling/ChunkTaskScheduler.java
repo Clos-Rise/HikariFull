@@ -144,6 +144,44 @@ public final class ChunkTaskScheduler {
         chunkHolder.updateSunshineDistance(minDistance);
     }
 
+
+
+    // ===== SUNSHINE: периодическое обновление расстояний =====
+    private int sunshineUpdateCounter = 0;
+    private static final int SUNSHINE_UPDATE_INTERVAL = 5; // раз в 5 тиков
+
+    /**
+     * Вызывается из ChunkHolderManager.tick() каждый тик мира.
+     * Обновляет sunshineDistance для чанков вокруг всех игроков.
+     */
+    public void tickSunshineDistances() {
+        if (++this.sunshineUpdateCounter < SUNSHINE_UPDATE_INTERVAL) {
+            return;
+        }
+        this.sunshineUpdateCounter = 0;
+
+        for (final ServerPlayer player : this.world.players()) {
+            final int playerChunkX = net.minecraft.util.Mth.floor(player.getX()) >> 4;
+            final int playerChunkZ = net.minecraft.util.Mth.floor(player.getZ()) >> 4;
+
+            // Радиус 10 покрывает все уровни Sunshine (0-1, 2-3, 4-6, 7-10)
+            for (int dz = -10; dz <= 10; ++dz) {
+                for (int dx = -10; dx <= 10; ++dx) {
+                    final NewChunkHolder holder = this.chunkHolderManager.getChunkHolder(
+                        playerChunkX + dx, playerChunkZ + dz
+                    );
+                    if (holder != null) {
+                        this.updateSunshineDistance(playerChunkX + dx, playerChunkZ + dz, holder);
+                    }
+                }
+            }
+        }
+    }
+
+
+
+// ================================================
+
     static {
         ((ChunkSystemChunkStatus)ChunkStatus.EMPTY).moonrise$setWriteRadius(0);
         ((ChunkSystemChunkStatus)ChunkStatus.STRUCTURE_STARTS).moonrise$setWriteRadius(0);
