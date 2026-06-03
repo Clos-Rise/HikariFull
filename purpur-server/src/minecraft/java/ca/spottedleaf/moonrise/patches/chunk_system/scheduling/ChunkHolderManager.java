@@ -907,6 +907,9 @@ public final class ChunkHolderManager {
         }
 
         this.processTicketUpdates();
+
+        //SUNSHINE:
+        this.taskScheduler.tickSunshineDistances();
     }
 
     public NewChunkHolder getChunkHolder(final int chunkX, final int chunkZ) {
