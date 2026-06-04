@@ -1943,7 +1943,6 @@ public final class NewChunkHolder {
         return ret;
     }
 
-    // (probably) holds ticket and scheduling lock
     public JsonObject getDebugJson() {
         final JsonObject ret = new JsonObject();
 
