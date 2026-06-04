@@ -829,7 +829,7 @@ public class ServerChunkCache extends ChunkSource implements ca.spottedleaf.moon
                 return true;
             }
 
-            // Paper - rewrite chunk system
+            // Paper - rewrite chunk syste
             return super.pollTask() | ((ca.spottedleaf.moonrise.patches.chunk_system.level.ChunkSystemServerLevel)ServerChunkCache.this.level).moonrise$getChunkTaskScheduler().executeMainThreadTask(); // Paper - rewrite chunk system
         }
     }
