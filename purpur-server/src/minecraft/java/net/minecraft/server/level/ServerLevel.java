@@ -528,12 +528,12 @@ public class ServerLevel extends Level implements WorldGenLevel, ServerEntityGet
         return true;
     }
 
-   @Override
-   public final void moonrise$issueEmergencySave() {
-       this.moonrise$getChunkTaskScheduler().chunkHolderManager.saveAllChunks(
-           true, true, true, true
-       );
-   }
+    @Override
+    public final void moonrise$issueEmergencySave() {
+        this.moonrise$getChunkTaskScheduler().chunkHolderManager.saveAllChunks(
+            true, true, true, true
+        );
+    }
     // Paper end - rewrite chunk system
     // Paper start - chunk tick iteration
     private final ca.spottedleaf.moonrise.common.list.ReferenceList<LevelChunk> playerTickingChunks = new ca.spottedleaf.moonrise.common.list.ReferenceList<>(EMPTY_LEVEL_CHUNKS);
@@ -914,9 +914,9 @@ public class ServerLevel extends Level implements WorldGenLevel, ServerEntityGet
                     }
                 );
             if (this.paperConfig().unsupportedSettings.ticking.blockEntities) { // Paper - option to disable ticking
-            profiler.popPush("blockEntities");
-            this.tickBlockEntities();
-            profiler.pop();
+                profiler.popPush("blockEntities");
+                this.tickBlockEntities();
+                profiler.pop();
             } // Paper - option to disable ticking
             this.spigotConfig.currentPrimedTnt = 0; // Spigot
         }
@@ -1027,11 +1027,11 @@ public class ServerLevel extends Level implements WorldGenLevel, ServerEntityGet
         profiler.push("iceandsnow");
 
         if (!this.paperConfig().environment.disableIceAndSnow) { // Paper - Option to disable ice and snow
-        for (int i = 0; i < tickSpeed; i++) {
-            if (simpleRandom.nextInt(48) == 0) { // Paper - optimise random ticking
-                this.tickPrecipitation(this.getBlockRandomPos(minX, 0, minZ, 15));
+            for (int i = 0; i < tickSpeed; i++) {
+                if (simpleRandom.nextInt(48) == 0) { // Paper - optimise random ticking
+                    this.tickPrecipitation(this.getBlockRandomPos(minX, 0, minZ, 15));
+                }
             }
-        }
         } // Paper - Option to disable ice and snow
 
         profiler.popPush("tickBlocks");
@@ -1127,10 +1127,10 @@ public class ServerLevel extends Level implements WorldGenLevel, ServerEntityGet
                             }
                         }
                         if (canSnow) {
-                        // Purpur end - Smooth snow accumulation
-                        BlockState newState = state.setValue(SnowLayerBlock.LAYERS, currentLayers + 1);
-                        Block.pushEntitiesUp(state, newState, this, topPos);
-                        org.bukkit.craftbukkit.event.CraftEventFactory.handleBlockFormEvent(this, topPos, newState, Block.UPDATE_ALL, null); // CraftBukkit
+                            // Purpur end - Smooth snow accumulation
+                            BlockState newState = state.setValue(SnowLayerBlock.LAYERS, currentLayers + 1);
+                            Block.pushEntitiesUp(state, newState, this, topPos);
+                            org.bukkit.craftbukkit.event.CraftEventFactory.handleBlockFormEvent(this, topPos, newState, Block.UPDATE_ALL, null); // CraftBukkit
                         } // Purpur - Smooth snow accumulation
                     }
                 } else {
@@ -1207,8 +1207,8 @@ public class ServerLevel extends Level implements WorldGenLevel, ServerEntityGet
                     if (!org.purpurmc.purpur.PurpurConfig.sleepSkippingNight.equalsIgnoreCase("default")) {
                         message = io.papermc.paper.adventure.PaperAdventure.asVanilla(net.kyori.adventure.text.minimessage.MiniMessage.miniMessage().deserialize(org.purpurmc.purpur.PurpurConfig.sleepSkippingNight));
                     } else
-                    // Purpur end - Customizable sleeping actionbar messages
-                    message = Component.translatable("sleep.skipping_night");
+                        // Purpur end - Customizable sleeping actionbar messages
+                        message = Component.translatable("sleep.skipping_night");
                 } else {
                     // Purpur start - Customizable sleeping actionbar messages
                     if (org.purpurmc.purpur.PurpurConfig.sleepingPlayersPercent.isBlank()) {
@@ -1219,8 +1219,8 @@ public class ServerLevel extends Level implements WorldGenLevel, ServerEntityGet
                             net.kyori.adventure.text.minimessage.tag.resolver.Placeholder.parsed("count", Integer.toString(this.sleepStatus.amountSleeping())),
                             net.kyori.adventure.text.minimessage.tag.resolver.Placeholder.parsed("total", Integer.toString(this.sleepStatus.sleepersNeeded(percentage)))));
                     } else
-                    // Purpur end - Customizable sleeping actionbar messages
-                    message = Component.translatable("sleep.players_sleeping", this.sleepStatus.amountSleeping(), this.sleepStatus.sleepersNeeded(percentage));
+                        // Purpur end - Customizable sleeping actionbar messages
+                        message = Component.translatable("sleep.players_sleeping", this.sleepStatus.amountSleeping(), this.sleepStatus.sleepersNeeded(percentage));
                 }
 
                 for (ServerPlayer player : this.players) {
@@ -1386,7 +1386,7 @@ public class ServerLevel extends Level implements WorldGenLevel, ServerEntityGet
         WeatherData weatherData = this.getWeatherData();
         // CraftBukkit start
         if (this.purpurConfig.rainStopsAfterSleep) // Purpur - Option for if rain and thunder should stop on sleep
-        weatherData.setRaining(false, org.bukkit.event.weather.WeatherChangeEvent.Cause.SLEEP); // Paper - Add cause to Weather/ThunderChangeEvents
+            weatherData.setRaining(false, org.bukkit.event.weather.WeatherChangeEvent.Cause.SLEEP); // Paper - Add cause to Weather/ThunderChangeEvents
         // If we stop due to everyone sleeping we should reset the weather duration to some other random value.
         // Not that everyone ever manages to get the whole server to sleep at the same time....
         if (!weatherData.isRaining()) {
@@ -1394,7 +1394,7 @@ public class ServerLevel extends Level implements WorldGenLevel, ServerEntityGet
         }
         // CraftBukkit end
         if (this.purpurConfig.thunderStopsAfterSleep) // Purpur - Option for if rain and thunder should stop on sleep
-        weatherData.setThundering(false, org.bukkit.event.weather.ThunderChangeEvent.Cause.SLEEP); // Paper - Add cause to Weather/ThunderChangeEvents
+            weatherData.setThundering(false, org.bukkit.event.weather.ThunderChangeEvent.Cause.SLEEP); // Paper - Add cause to Weather/ThunderChangeEvents
         // CraftBukkit start
         // If we stop due to everyone sleeping we should reset the weather duration to some other random value.
         // Not that everyone ever manages to get the whole server to sleep at the same time....
@@ -1455,23 +1455,23 @@ public class ServerLevel extends Level implements WorldGenLevel, ServerEntityGet
                 currentlyTickingEntity.lazySet(entity);
             }
             // Paper end - log detailed entity tick information
-        entity.setOldPosAndRot();
-        ProfilerFiller profiler = Profiler.get();
-        entity.tickCount++;
-        entity.totalEntityAge++; // Paper - age-like counter for all entities
-        profiler.push(entity.typeHolder()::getRegisteredName);
-        profiler.incrementCounter("tickNonPassenger");
-        final boolean isActive = io.papermc.paper.entity.activation.ActivationRange.checkIfActive(entity); // Paper - EAR 2
-        if (isActive) { // Paper - EAR 2
-        entity.tick();
-        entity.postTick(); // CraftBukkit
-        } else {entity.inactiveTick();} // Paper - EAR 2
-        profiler.pop();
+            entity.setOldPosAndRot();
+            ProfilerFiller profiler = Profiler.get();
+            entity.tickCount++;
+            entity.totalEntityAge++; // Paper - age-like counter for all entities
+            profiler.push(entity.typeHolder()::getRegisteredName);
+            profiler.incrementCounter("tickNonPassenger");
+            final boolean isActive = io.papermc.paper.entity.activation.ActivationRange.checkIfActive(entity); // Paper - EAR 2
+            if (isActive) { // Paper - EAR 2
+                entity.tick();
+                entity.postTick(); // CraftBukkit
+            } else {entity.inactiveTick();} // Paper - EAR 2
+            profiler.pop();
 
-        for (Entity passenger : entity.getPassengers()) {
-            this.tickPassenger(entity, passenger, isActive); // Paper - EAR 2
-        }
-        // Paper start - log detailed entity tick information
+            for (Entity passenger : entity.getPassengers()) {
+                this.tickPassenger(entity, passenger, isActive); // Paper - EAR 2
+            }
+            // Paper start - log detailed entity tick information
         } finally {
             if (currentlyTickingEntity.get() == entity) {
                 currentlyTickingEntity.lazySet(null);
@@ -1492,8 +1492,8 @@ public class ServerLevel extends Level implements WorldGenLevel, ServerEntityGet
             profiler.incrementCounter("tickPassenger");
             // Paper start - EAR 2
             if (isActive) {
-            entity.rideTick();
-            entity.postTick(); // CraftBukkit
+                entity.rideTick();
+                entity.postTick(); // CraftBukkit
             } else {
                 entity.setDeltaMovement(Vec3.ZERO);
                 entity.inactiveTick();
@@ -1922,38 +1922,38 @@ public class ServerLevel extends Level implements WorldGenLevel, ServerEntityGet
         this.getChunkSource().blockChanged(pos);
         this.pathTypesByPosCache.invalidate(pos);
         if (this.paperConfig().misc.updatePathfindingOnBlockUpdate) { // Paper - option to disable pathfinding updates
-        VoxelShape oldShape = old.getCollisionShape(this, pos);
-        VoxelShape newShape = current.getCollisionShape(this, pos);
-        if (Shapes.joinIsNotEmpty(oldShape, newShape, BooleanOp.NOT_SAME)) {
-            List<PathNavigation> navigationsToUpdate = new ObjectArrayList<>();
+            VoxelShape oldShape = old.getCollisionShape(this, pos);
+            VoxelShape newShape = current.getCollisionShape(this, pos);
+            if (Shapes.joinIsNotEmpty(oldShape, newShape, BooleanOp.NOT_SAME)) {
+                List<PathNavigation> navigationsToUpdate = new ObjectArrayList<>();
 
-            try { // Paper - catch CME see below why
-            for (Mob navigatingMob : this.navigatingMobs) {
-                PathNavigation pathNavigation = navigatingMob.getNavigation();
-                if (pathNavigation.shouldRecomputePath(pos)) {
-                    navigationsToUpdate.add(pathNavigation);
+                try { // Paper - catch CME see below why
+                    for (Mob navigatingMob : this.navigatingMobs) {
+                        PathNavigation pathNavigation = navigatingMob.getNavigation();
+                        if (pathNavigation.shouldRecomputePath(pos)) {
+                            navigationsToUpdate.add(pathNavigation);
+                        }
+                    }
+                    // Paper start - catch CME see below why
+                } catch (final java.util.ConcurrentModificationException concurrentModificationException) {
+                    // This can happen because the pathfinder update below may trigger a chunk load, which in turn may cause more navigators to register
+                    // In this case we just run the update again across all the iterators as the chunk will then be loaded
+                    // As this is a relative edge case it is much faster than copying navigators (on either read or write)
+                    this.sendBlockUpdated(pos, old, current, updateFlags);
+                    return;
+                }
+                // Paper end - catch CME see below why
+
+                try {
+                    this.isUpdatingNavigations = true;
+
+                    for (PathNavigation navigation : navigationsToUpdate) {
+                        navigation.recomputePath();
+                    }
+                } finally {
+                    this.isUpdatingNavigations = false;
                 }
             }
-            // Paper start - catch CME see below why
-            } catch (final java.util.ConcurrentModificationException concurrentModificationException) {
-                // This can happen because the pathfinder update below may trigger a chunk load, which in turn may cause more navigators to register
-                // In this case we just run the update again across all the iterators as the chunk will then be loaded
-                // As this is a relative edge case it is much faster than copying navigators (on either read or write)
-                this.sendBlockUpdated(pos, old, current, updateFlags);
-                return;
-            }
-            // Paper end - catch CME see below why
-
-            try {
-                this.isUpdatingNavigations = true;
-
-                for (PathNavigation navigation : navigationsToUpdate) {
-                    navigation.recomputePath();
-                }
-            } finally {
-                this.isUpdatingNavigations = false;
-            }
-        }
         } // Paper - option to disable pathfinding updates
     }
 
