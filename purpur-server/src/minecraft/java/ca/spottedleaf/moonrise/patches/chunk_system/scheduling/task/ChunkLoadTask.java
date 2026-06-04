@@ -474,7 +474,7 @@ public final class ChunkLoadTask extends ChunkProgressionTask {
             }
 
             if (data == null || data.isEmpty()) {
-                // nothing to do
+                // nothing
                 return new TaskResult<>(null, null);
             }
 
