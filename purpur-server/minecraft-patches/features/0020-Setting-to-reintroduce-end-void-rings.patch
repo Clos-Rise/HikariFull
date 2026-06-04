@@ -5,10 +5,10 @@ Subject: [PATCH] Setting to reintroduce end void rings
 
 
 diff --git a/net/minecraft/server/MinecraftServer.java b/net/minecraft/server/MinecraftServer.java
-index 838898572cc30207a1b915dcea11f612254ac453..d2a5a1293f276aab3136c4563d778d0d79c7ff29 100644
+index 9f3aec24bd8aa75ea116375c1cf0a54bcc229fa2..4af19f9f5152e9f6386e375a1ac5280ce00f48ea 100644
 --- a/net/minecraft/server/MinecraftServer.java
 +++ b/net/minecraft/server/MinecraftServer.java
-@@ -1351,6 +1351,15 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
+@@ -1313,6 +1313,15 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
                  }
              }
              // Purpur end - config for startup commands
@@ -25,13 +25,13 @@ index 838898572cc30207a1b915dcea11f612254ac453..d2a5a1293f276aab3136c4563d778d0d
              while (this.running) {
                  final long tickStart = System.nanoTime(); // Paper - improve tick loop
 diff --git a/net/minecraft/server/dedicated/DedicatedServer.java b/net/minecraft/server/dedicated/DedicatedServer.java
-index 8f2757663c9a3822e07b763386376cafdc3eb58f..6fd7a1f5bd96f868a950097989176eb4cdf3e235 100644
+index 6a0ccd6eb3e355348c68db3de980f4eddea1aaea..19a25ee84a4211256a1dbb614db9ebf2ce53182f 100644
 --- a/net/minecraft/server/dedicated/DedicatedServer.java
 +++ b/net/minecraft/server/dedicated/DedicatedServer.java
-@@ -274,6 +274,15 @@ public class DedicatedServer extends MinecraftServer implements ServerInterface
-         org.spigotmc.SpigotConfig.init((java.io.File) this.options.valueOf("spigot-settings"));
+@@ -258,6 +258,15 @@ public class DedicatedServer extends MinecraftServer implements ServerInterface
          org.spigotmc.SpigotConfig.registerCommands();
          // Spigot end
+         io.papermc.paper.util.ObfHelper.INSTANCE.getClass(); // Paper - load mappings for stacktrace deobf and etc.
 +        // Purpur start - Migrate Setting to reintroduce end void rings
 +        try {
 +            org.purpurmc.purpur.PurpurConfig.init((java.io.File) options.valueOf("purpur-settings"));
@@ -44,7 +44,7 @@ index 8f2757663c9a3822e07b763386376cafdc3eb58f..6fd7a1f5bd96f868a950097989176eb4
          // Paper start - initialize global and world-defaults configuration
          this.paperConfigurations.initializeGlobalConfiguration(this.registryAccess());
          this.paperConfigurations.initializeWorldDefaultsConfiguration(this.registryAccess());
-@@ -290,7 +299,7 @@ public class DedicatedServer extends MinecraftServer implements ServerInterface
+@@ -274,7 +283,7 @@ public class DedicatedServer extends MinecraftServer implements ServerInterface
          io.papermc.paper.command.PaperCommands.registerCommands(this); // Paper - setup /paper command
          this.server.spark.registerCommandBeforePlugins(this.server); // Paper - spark
          com.destroystokyo.paper.Metrics.PaperMetrics.startMetrics(); // Paper - start metrics
@@ -53,7 +53,7 @@ index 8f2757663c9a3822e07b763386376cafdc3eb58f..6fd7a1f5bd96f868a950097989176eb4
          try {
              org.purpurmc.purpur.PurpurConfig.init((java.io.File) options.valueOf("purpur-settings"));
          } catch (Exception e) {
-@@ -298,7 +307,7 @@ public class DedicatedServer extends MinecraftServer implements ServerInterface
+@@ -282,7 +291,7 @@ public class DedicatedServer extends MinecraftServer implements ServerInterface
              return false;
          }
          org.purpurmc.purpur.PurpurConfig.registerCommands();

@@ -1,12 +1,12 @@
 --- a/net/minecraft/server/commands/GameModeCommand.java
 +++ b/net/minecraft/server/commands/GameModeCommand.java
-@@ -47,6 +_,18 @@
+@@ -53,6 +_,18 @@
      }
  
-     private static int setMode(final CommandContext<CommandSourceStack> context, final Collection<ServerPlayer> players, final GameType type) {
+     private static int setMode(CommandContext<CommandSourceStack> context, Collection<ServerPlayer> players, GameType gameType) {
 +        // Purpur start - Gamemode extra permissions
 +        if (org.purpurmc.purpur.PurpurConfig.commandGamemodeRequiresPermission) {
-+            String gamemode = type.getName();
++            String gamemode = gameType.getName();
 +            CommandSourceStack sender = context.getSource();
 +            if (!sender.testPermission(Permissions.COMMANDS_GAMEMASTER, "minecraft.command.gamemode." + gamemode)) {
 +                return 0;
@@ -16,6 +16,6 @@
 +            }
 +        }
 +        // Purpur end - Gamemode extra permissions
-         int count = 0;
+         int i = 0;
  
-         for (ServerPlayer player : players) {
+         for (ServerPlayer serverPlayer : players) {

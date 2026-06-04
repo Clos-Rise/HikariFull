@@ -5,10 +5,10 @@ Subject: [PATCH] Purpur config files
 
 
 diff --git a/src/main/java/org/bukkit/Server.java b/src/main/java/org/bukkit/Server.java
-index f9fd6bb7e60d31eeb52e0025b9ff4ceb34e789f1..5a3d675862a4a9d6efd86052d13081d6e142f7c4 100644
+index bd8123503132b742d873c18486c3d19024fb9898..a17790d2da3008927b79814629e073b2091ce421 100644
 --- a/src/main/java/org/bukkit/Server.java
 +++ b/src/main/java/org/bukkit/Server.java
-@@ -2444,6 +2444,18 @@ public interface Server extends PluginMessageRecipient, net.kyori.adventure.audi
+@@ -2425,6 +2425,18 @@ public interface Server extends PluginMessageRecipient, net.kyori.adventure.audi
          }
          // Paper end
  

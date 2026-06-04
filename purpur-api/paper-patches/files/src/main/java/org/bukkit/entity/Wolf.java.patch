@@ -1,9 +1,10 @@
 --- a/src/main/java/org/bukkit/entity/Wolf.java
 +++ b/src/main/java/org/bukkit/entity/Wolf.java
-@@ -105,6 +_,22 @@
-      */
-     void setSoundVariant(@NotNull SoundVariant soundVariant);
- 
+@@ -163,4 +_,20 @@
+             return RegistryAccess.registryAccess().getRegistry(RegistryKey.WOLF_SOUND_VARIANT).getOrThrow(Key.key(Key.MINECRAFT_NAMESPACE, key));
+         }
+     }
++
 +    // Purpur start
 +    /**
 +     * Checks if this wolf is rabid
@@ -19,7 +20,4 @@
 +     */
 +    void setRabid(boolean rabid);
 +    // Purpur end
-+    
-     /**
-      * Represents the variant of a wolf.
-      */
+ }

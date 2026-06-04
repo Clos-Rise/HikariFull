@@ -2,7 +2,7 @@
 +++ b/src/main/java/org/bukkit/craftbukkit/entity/CraftVillager.java
 @@ -243,4 +_,11 @@
      public void restock() {
-         this.getHandle().restock();
+         getHandle().restock();
      }
 +
 +    // Purpur start - Lobotomize stuck villagers

@@ -6,25 +6,25 @@
      private @Nullable Component name;
 +    private int lapis = 0; // Purpur - Enchantment Table Persists Lapis
  
-     public EnchantingTableBlockEntity(final BlockPos worldPosition, final BlockState blockState) {
-         super(BlockEntityType.ENCHANTING_TABLE, worldPosition, blockState);
+     public EnchantingTableBlockEntity(BlockPos pos, BlockState blockState) {
+         super(BlockEntityType.ENCHANTING_TABLE, pos, blockState);
 @@ -39,12 +_,14 @@
-     protected void saveAdditional(final ValueOutput output) {
+     protected void saveAdditional(ValueOutput output) {
          super.saveAdditional(output);
          output.storeNullable("CustomName", ComponentSerialization.CODEC, this.name);
 +        output.putInt("Purpur.Lapis", this.lapis); // Purpur - Enchantment Table Persists Lapis
      }
  
      @Override
-     protected void loadAdditional(final ValueInput input) {
+     protected void loadAdditional(ValueInput input) {
          super.loadAdditional(input);
          this.name = parseCustomNameSafe(input, "CustomName");
 +        this.lapis = input.getIntOr("Purpur.Lapis", 0); // Purpur - Enchantment Table Persists Lapis
      }
  
-     public static void bookAnimationTick(final Level level, final BlockPos worldPosition, final BlockState state, final EnchantingTableBlockEntity entity) {
+     public static void bookAnimationTick(Level level, BlockPos pos, BlockState state, EnchantingTableBlockEntity enchantingTable) {
 @@ -135,4 +_,22 @@
-     public void removeComponentsFromTag(final ValueOutput output) {
+     public void removeComponentsFromTag(ValueOutput output) {
          output.discard("CustomName");
      }
 +

@@ -1,0 +1,101 @@
+++++ REJECTED HUNK: 1
+@@ -2,6 +2,7 @@
+ import io.papermc.paperweight.attribute.DevBundleOutput
+ import io.papermc.paperweight.util.*
+ import java.time.Instant
++import kotlin.io.path.writeText
+ plugins {
+     `java-library`
+++++ END HUNK
+
+++++ REJECTED HUNK: 2
+@@ -22,6 +23,18 @@
+     minecraftVersion = providers.gradleProperty("mcVersion")
+     gitFilePatches = false
++    // Purpur start - Rebrand
++    val purpur = forks.register("purpur") {
++        upstream.patchDir("paperServer") {
++            upstreamPath = "paper-server"
++            excludes = setOf("src/minecraft", "patches", "build.gradle.kts")
++            patchesDir = rootDirectory.dir("purpur-server/paper-patches")
++            outputDir = rootDirectory.dir("paper-server")
++        }
++    }
++    activeFork = purpur
++    // Purpur end - Rebrand
++
+     spigot {
+         enabled = true
+         buildDataRef = "17f77cee7117ab9d6175f088ae8962bfd04e61a9"
+++++ END HUNK
+
+++++ REJECTED HUNK: 3
+@@ -104,7 +117,21 @@
+     }
+ }
+-val log4jPlugins = sourceSets.create("log4jPlugins")
++// Purpur start - Rebrand
++sourceSets {
++    main {
++        java { srcDir("../paper-server/src/main/java") }
++        resources { srcDir("../paper-server/src/main/resources") }
++    }
++    test {
++        java { srcDir("../paper-server/src/test/java") }
++        resources { srcDir("../paper-server/src/test/resources") }
++    }
++}
++val log4jPlugins = sourceSets.create("log4jPlugins") {
++    java { srcDir("../paper-server/src/log4jPlugins/java") }
++}
++// Purpur end - Rebrand
+ configurations.named(log4jPlugins.compileClasspathConfigurationName) {
+     extendsFrom(configurations.compileClasspath.get())
+ }
+++++ END HUNK
+
+++++ REJECTED HUNK: 4
+@@ -127,7 +154,7 @@
+ }
+ dependencies {
+-    implementation(project(":paper-api"))
++    implementation(project(":purpur-api")) // Purpur
+     implementation("ca.spottedleaf:concurrentutil:0.0.10")
+     implementation("org.jline:jline-terminal-ffm:3.27.1") // use ffm on java 22+
+     implementation("org.jline:jline-terminal-jni:3.27.1") // fall back to jni on java 21
+++++ END HUNK
+
+++++ REJECTED HUNK: 5
+@@ -153,6 +180,10 @@
+     implementation("org.ow2.asm:asm-commons:9.9.1")
+     implementation("org.spongepowered:configurate-yaml:4.2.0")
++    implementation("org.mozilla:rhino-runtime:1.7.14") // Purpur
++    implementation("org.mozilla:rhino-engine:1.7.14") // Purpur
++    implementation("dev.omega24:upnp4j:1.0") // Purpur
++
+     // Deps that were previously in the API but have now been moved here for backwards compat, eventually to be removed
+     runtimeOnly("commons-lang:commons-lang:2.6")
+     runtimeOnly("org.xerial:sqlite-jdbc:3.49.1.0")
+++++ END HUNK
+
+++++ REJECTED HUNK: 7
+@@ -264,7 +295,7 @@
+     jvmArgumentProviders.add(provider)
+ }
+-val generatedDir: java.nio.file.Path = layout.projectDirectory.dir("src/generated/java").asFile.toPath()
++val generatedDir: java.nio.file.Path = layout.projectDirectory.dir("../paper-server/src/generated/java").asFile.toPath() // Purpur
+ idea {
+     module {
+         generatedSourceDirs.add(generatedDir.toFile())
+++++ END HUNK
+
+++++ REJECTED HUNK: 8
+@@ -356,7 +387,7 @@
+     mainClass.set(null as String?)
+ }
+-fill {
++/* fill { // Purpur - we don't use fill
+     project("paper")
+     versionFamily(paperweight.minecraftVersion.map { it.split(".", "-").takeWhile { part -> part.toIntOrNull() != null }.take(2).joinToString(".") })
+     version(paperweight.minecraftVersion)
+++++ END HUNK

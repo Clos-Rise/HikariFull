@@ -230,7 +230,7 @@ public class PurpurConfig {
         deathMessageOnlyBroadcastToAffectedPlayer = getBoolean("settings.broadcasts.death.only-broadcast-to-affected-player", deathMessageOnlyBroadcastToAffectedPlayer);
     }
 
-    public static String serverModName = io.papermc.paper.ServerBuildInfo.buildInfo().brandName();
+    public static String serverModName = "HikariV1"; // Hikari - Rebrand F3 to HikariV1
     private static void serverModName() {
         serverModName = getString("settings.server-mod-name", serverModName);
     }
@@ -617,4 +617,10 @@ public class PurpurConfig {
             startupCommands.add(command);
         });
     }
+
+    // Hikari start - Load Hikari configuration
+    private static void hikariConfig() {
+        HikariConfig.init();
+    }
+    // Hikari end - Load Hikari configuration
 }

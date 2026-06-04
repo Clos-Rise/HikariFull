@@ -13,17 +13,17 @@ plugins {
 
 if (!file(".git").exists()) {
     val errorText = """
-        
+
         =====================[ ERROR ]=====================
          The Purpur project directory is not a properly cloned Git repository.
-         
+
          In order to build Purpur from source you must clone
          the Purpur repository using Git, not download a code
          zip from GitHub.
-         
+
          Built Purpur jars are available for download at
          https://purpurmc.org/downloads
-         
+
          See https://github.com/PurpurMC/Purpur/blob/HEAD/CONTRIBUTING.md
          for further information on building and modifying Purpur.
         ===================================================
@@ -54,16 +54,4 @@ fun optionalInclude(name: String, op: (ProjectDescriptor.() -> Unit)? = null) {
             """.trimIndent()
         )
     }
-}
-
-gradle.lifecycle.beforeProject {
-    val mcVersion = providers.gradleProperty("mcVersion").get().trim()
-    val purpurChannel = providers.gradleProperty("channel").get().trim()
-    val purpurBuildNumber = providers.environmentVariable("BUILD_NUMBER").orNull?.trim()?.toInt()
-    val versionString = if (purpurBuildNumber == null) {
-        "$mcVersion.local-SNAPSHOT"
-    } else {
-        "$mcVersion.build.$purpurBuildNumber-${purpurChannel.lowercase()}"
-    }
-    version = versionString
 }

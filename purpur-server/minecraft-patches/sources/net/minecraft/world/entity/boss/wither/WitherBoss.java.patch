@@ -1,14 +1,14 @@
 --- a/net/minecraft/world/entity/boss/wither/WitherBoss.java
 +++ b/net/minecraft/world/entity/boss/wither/WitherBoss.java
-@@ -81,6 +_,7 @@
-     private static final TargetingConditions.Selector LIVING_ENTITY_SELECTOR = (target, level) -> !target.is(EntityTypeTags.WITHER_FRIENDS)
-         && target.attackable();
+@@ -80,6 +_,7 @@
+     private static final TargetingConditions.Selector LIVING_ENTITY_SELECTOR = (entity, level) -> !entity.getType().is(EntityTypeTags.WITHER_FRIENDS)
+         && entity.attackable();
      private static final TargetingConditions TARGETING_CONDITIONS = TargetingConditions.forCombat().range(20.0).selector(LIVING_ENTITY_SELECTOR);
 +    private java.util.@Nullable UUID summoner; // Purpur - Summoner API
  
-     public WitherBoss(final EntityType<? extends WitherBoss> type, final Level level) {
+     public WitherBoss(EntityType<? extends WitherBoss> type, Level level) {
          super(type, level);
-@@ -89,6 +_,16 @@
+@@ -88,6 +_,16 @@
          this.xpReward = 50;
      }
  
@@ -23,17 +23,17 @@
 +    // Purpur end - Summoner API
 +
      @Override
-     protected PathNavigation createNavigation(final Level level) {
+     protected PathNavigation createNavigation(Level level) {
          FlyingPathNavigation flyingPathNavigation = new FlyingPathNavigation(this, level);
-@@ -121,6 +_,7 @@
-     protected void addAdditionalSaveData(final ValueOutput output) {
+@@ -120,6 +_,7 @@
+     protected void addAdditionalSaveData(ValueOutput output) {
          super.addAdditionalSaveData(output);
          output.putInt("Invul", this.getInvulnerableTicks());
 +        output.storeNullable("Purpur.Summoner", net.minecraft.core.UUIDUtil.CODEC, getSummoner()); // Purpur - Summoner API
      }
  
      @Override
-@@ -130,6 +_,7 @@
+@@ -129,6 +_,7 @@
          if (this.hasCustomName()) {
              this.bossEvent.setName(this.getDisplayName());
          }
@@ -41,7 +41,7 @@
      }
  
      @Override
-@@ -273,7 +_,7 @@
+@@ -272,7 +_,7 @@
                      level.explode(this, this.getX(), this.getEyeY(), this.getZ(), event.getRadius(), event.getFire(), Level.ExplosionInteraction.MOB);
                  }
                  // CraftBukkit end
@@ -50,7 +50,7 @@
                      // CraftBukkit start - Use relative location for far away sounds
                      // level.globalLevelEvent(LevelEvent.SOUND_WITHER_BOSS_SPAWN, this.blockPosition(), 0);
                      int viewDistance = level.getCraftServer().getViewDistance() * 16;
-@@ -377,8 +_,10 @@
+@@ -379,8 +_,10 @@
                  }
              }
  
@@ -63,10 +63,10 @@
              }
  
              this.bossEvent.setProgress(this.getHealth() / this.getMaxHealth());
-@@ -579,6 +_,7 @@
+@@ -577,6 +_,7 @@
  
      @Override
-     protected boolean canRide(final Entity vehicle) {
+     protected boolean canRide(Entity entity) {
 +        if (this.level().purpurConfig.witherCanRideVehicles) return this.boardingCooldown <= 0; // Purpur - Configs for if Wither/Ender Dragon can ride vehicles
          return false;
      }

@@ -1,19 +1,17 @@
 --- a/paper-server/build.gradle.kts
 +++ b/paper-server/build.gradle.kts
-@@ -2,6 +_,8 @@
+@@ -2,6 +_,7 @@
  import io.papermc.paperweight.attribute.DevBundleOutput
  import io.papermc.paperweight.util.*
  import java.time.Instant
-+import kotlin.io.path.createParentDirectories
 +import kotlin.io.path.writeText
  
  plugins {
      `java-library`
-@@ -22,9 +_,21 @@
+@@ -22,6 +_,18 @@
      minecraftVersion = providers.gradleProperty("mcVersion")
      gitFilePatches = false
  
--    updatingMinecraft {
 +    // Purpur start - Rebrand
 +    val purpur = forks.register("purpur") {
 +        upstream.patchDir("paperServer") {
@@ -26,14 +24,10 @@
 +    activeFork = purpur
 +    // Purpur end - Rebrand
 +
-+    /*updatingMinecraft { // Purpur start - TODO - snapshot - we don't need this
-         // oldPaperCommit = "711c5de2b05df39b72c44ff54e9f9381f8d153cb"
--    }
-+    }*/ // Purpur end - TODO - snapshot - we don't need this
- }
- 
- tasks.generateDevelopmentBundle {
-@@ -86,7 +_,21 @@
+     spigot {
+         enabled = true
+         buildDataRef = "17f77cee7117ab9d6175f088ae8962bfd04e61a9"
+@@ -104,7 +_,21 @@
      }
  }
  
@@ -56,17 +50,17 @@
  configurations.named(log4jPlugins.compileClasspathConfigurationName) {
      extendsFrom(configurations.compileClasspath.get())
  }
-@@ -109,7 +_,7 @@
+@@ -127,7 +_,7 @@
  }
  
  dependencies {
 -    implementation(project(":paper-api"))
 +    implementation(project(":purpur-api")) // Purpur
-     implementation("ca.spottedleaf:concurrentutil:0.0.10")
+     implementation("ca.spottedleaf:concurrentutil:0.0.8")
      implementation("org.jline:jline-terminal-ffm:3.27.1") // use ffm on java 22+
      implementation("org.jline:jline-terminal-jni:3.27.1") // fall back to jni on java 21
-@@ -135,6 +_,10 @@
-     implementation("org.ow2.asm:asm-commons:9.9.1")
+@@ -153,6 +_,10 @@
+     implementation("org.ow2.asm:asm-commons:9.8")
      implementation("org.spongepowered:configurate-yaml:4.2.0")
  
 +    implementation("org.mozilla:rhino-runtime:1.7.14") // Purpur
@@ -76,7 +70,7 @@
      // Deps that were previously in the API but have now been moved here for backwards compat, eventually to be removed
      runtimeOnly("commons-lang:commons-lang:2.6")
      runtimeOnly("org.xerial:sqlite-jdbc:3.49.1.0")
-@@ -164,21 +_,21 @@
+@@ -191,21 +_,21 @@
          val git = Git(rootProject.layout.projectDirectory.path)
          val mcVersion = rootProject.providers.gradleProperty("mcVersion").get()
          val build = System.getenv("BUILD_NUMBER") ?: null
@@ -89,22 +83,22 @@
          attributes(
              "Main-Class" to "org.bukkit.craftbukkit.Main",
 -            "Implementation-Title" to "Paper",
-+            "Implementation-Title" to "Purpur", // Purpur
++            "Implementation-Title" to "HikariV1", // Hikari - Rebrand to HikariV1
              "Implementation-Version" to implementationVersion,
              "Implementation-Vendor" to date,
 -            "Specification-Title" to "Paper",
-+            "Specification-Title" to "Purpur", // Purpur
++            "Specification-Title" to "HikariV1", // Hikari - Rebrand to HikariV1
              "Specification-Version" to project.version,
 -            "Specification-Vendor" to "Paper Team",
 -            "Brand-Id" to "papermc:paper",
 -            "Brand-Name" to "Paper",
-+            "Specification-Vendor" to "Purpur Team", // Purpur
++            "Specification-Vendor" to "HikariV1 Team", // Hikari - Rebrand to HikariV1
 +            "Brand-Id" to "purpurmc:purpur", // Purpur
-+            "Brand-Name" to "Purpur", // Purpur
++            "Brand-Name" to "HikariV1", // Hikari - Rebrand to HikariV1
              "Build-Number" to (build ?: ""),
              "Build-Time" to buildTime.toString(),
              "Git-Branch" to gitBranch,
-@@ -237,7 +_,7 @@
+@@ -264,7 +_,7 @@
      jvmArgumentProviders.add(provider)
  }
  
@@ -113,7 +107,7 @@
  idea {
      module {
          generatedSourceDirs.add(generatedDir.toFile())
-@@ -315,7 +_,7 @@
+@@ -356,7 +_,7 @@
      mainClass.set(null as String?)
  }
  
@@ -122,7 +116,7 @@
      project("paper")
      versionFamily(paperweight.minecraftVersion.map { it.split(".", "-").takeWhile { part -> part.toIntOrNull() != null }.take(2).joinToString(".") })
      version(paperweight.minecraftVersion)
-@@ -330,4 +_,47 @@
+@@ -371,4 +_,44 @@
              }
          }
      }
@@ -134,9 +128,6 @@
 +//
 +//     val patchDir = project.rootDir.resolve("purpur-server/minecraft-patches/sources").convertToPath().cleanDir()
 +//     val inputDir = this.project.rootDir.resolve("purpur-server/src/minecraft/java").convertToPath()
-+//
-+//     //val patchDir = project.rootDir.resolve("purpur-server/paper-patches/files").convertToPath().cleanDir()
-+//     //val inputDir = this.project.rootDir.resolve("paper-server").convertToPath()
 +//
 +//     val git = Git(inputDir)
 +//     git("stash", "push").executeSilently(silenceErr = true)
