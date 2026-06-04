@@ -1550,7 +1550,7 @@ public final class ChunkHolderManager {
 
             // note: by using a copy of the backing array, we can avoid explicit exceptions we may trip when iterating
             // directly over the set using the iterator
-            // however, it also means we need to null-check the values, and there is a possibility that we _miss_ an
+            // however, it also means we need to null-check the values, and there is a possibility that we _miss_
             // entry OR iterate over an entry multiple times
             for (final Ticket ticket : tickets.copyBackingArray()) {
                 if (ticket == null) {
