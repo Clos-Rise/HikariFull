@@ -144,7 +144,10 @@ public final class ChunkTaskScheduler {
         chunkHolder.updateSunshineDistance(minDistance);
     }
 
-
+    public int getSunshineDistance(final int chunkX, final int chunkZ) {
+        final NewChunkHolder holder = this.chunkHolderManager.getChunkHolder(chunkX, chunkZ);
+        return holder != null ? holder.getSunshineDistance() : Integer.MAX_VALUE;
+    }
 
     // ===== SUNSHINE: периодическое обновление расстояний =====
     private int sunshineUpdateCounter = 0;
